@@ -1,48 +1,27 @@
 <!DOCTYPE html>
-
 <html lang="en-us">
-
   <head>
-
     <meta charset="UTF-8">
-    <title>Trivial Trivia</title>
-
-    <!-- Our CSS style sheet -->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-
-  </head>
-
-  <body>
-    
-    <div id="head-wrapper">
-		<h1 style="text-align:center">Rick and Morty Trivia</h1>
-      <div id="display">00:30</div>
-
-      <!-- Div containing our stopwatch controls -->
-      <div id="buttons">
-        <button id="start">Start</button>
-      </div>
-
-	    </div>
-	    </div>
-	</div>
-
-	<div id="questions-wrapper">
-		<h3 style="text-align:center"><div class="question"></div></h3><br>
-		<div id="buttons">
-		<button id="next">Next</button>
-        <button id="previous">Previous</button>
-        <button id="submit">Submit</button>
-        </div>
-	</div>
-
-
+    <title>Rick and Morty Trivia</title>
+    <!-- CSS Reset Sheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+    <!-- Out Own CSS Sheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
     <!-- jQuery -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Geo" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="wrapper">
+      <h1>Trivia</h1>
+      <div id="sub-wrapper">
+        <div id="quiz-area">
+          <button id="start">Start</button>
+        </div>
+      </div>
+    </div>
     <!-- Script -->
     <script type="text/javascript" src="assets/javascript/app.js"></script>
-
   </body>
-
 </html>

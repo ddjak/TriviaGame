@@ -1,109 +1,125 @@
-var questionsList = ["The show's theme song is a parody of:", 
-                     "Sarah Chalke, the voice of Beth, can do what?",
-                      "Which universe does Rick reside in?"];
 
-var choicesList = ["Power Rangers", "Back to the Future", "Daredevil", "Doctor Who",
-                   "Play the ukulele", "Program", "Snarf",
-                   "D-42", "138084", "CBC2C"
-                    ];
-
-var answersList = ["Doctor Who", "Burp on command", "C-137"];
-
-
-function visibilitySubmit() {
-  var getSubmit = document.getElementById("submit");
-  var getDisplay = document.getElementById("display");
-  var getNext = document.getElementById("next");
-  var getPrevious = document.getElementById("previous");
-  var getStart = document.getElementById("start");
-  getSubmit.style.visibility = "hidden";
-  getDisplay.style.visibility = "hidden";
-  getNext.style.visibility = "hidden";
-  getPrevious.style.visibility = "hidden";
-  getStart.style.visibility = "visible";
-
-  $("#start").on("click", function() {
-  getSubmit.style.visibility = "visible";
-  getDisplay.style.visibility = "visible";
-    getNext.style.visibility = "visible";
-  getPrevious.style.visibility = "visible";
-  getStart.style.visibility = "hidden";
-  });
-}
-
-function visibilityQuestions() {
-  $("#start").on("click", function() {
-  $(".question").html(questionsList[0]);
-    var radioBtn = $('<br><br> <input type="radio" id="choice1" name="rbtnCount" /> <br>'); 
-    radioBtn.appendTo('.question');
-    var choices = choicesList[i];
-    console.log(choicesList[i]);
-  });
-}
-
-window.onload = function() {
-  visibilitySubmit();
-  visibilityQuestions();
-
-  $("#next").click(stopwatch.stop);
-  $("#submit").click(stopwatch.reset);
-  $("#start").click(stopwatch.start);
-};
-
-//  Variable that will hold our setInterval that runs the stopwatch
-var intervalId;
-
-var clockRunning = false;
-
-var stopwatch = {
-
-  time: 30,
-  lap: 1,
-
+var panel = $("#quiz-area");
+var countStartNumber = 30;
+// Question set
+var questions = [{
+  question: "The show's theme song is a parody of:",
+  answers: ["Power Rangers", "Daredevil", "Back To The Future", "Doctor Who"],
+  correctAnswer: "Doctor Who",
+  //image: "assets/images/"
+}, {
+  question: "Sarah Chalke, the voice of Beth, can do what?",
+  answers: ["Play ukulele", "Burp on command", "Play piano", "Program"],
+  correctAnswer: "Burp on command",
+  //image: "assets/images/"
+}, {
+  question: "Which universe does Rick reside in?",
+  answers: ["D-42", "C-137", "WD-40", "CBC2C"],
+  correctAnswer: "C-137",
+ //image: "assets/images/"
+}];
+// Variable to hold our setInterval
+var timer;
+var game = {
+  questions: questions,
+  currentQuestion: 0,
+  counter: countStartNumber,
+  correct: 0,
+  incorrect: 0,
+  countdown: function() {
+    game.counter--;
+    $("#counter-number").html(game.counter);
+    if (game.counter === 0) {
+      console.log("TIME UP");
+      game.timeUp();
+    }
+  },
+  loadQuestion: function() {
+    timer = setInterval(game.countdown, 1000);
+    panel.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
+    for (var i = 0; i < questions[this.currentQuestion].answers.length; i++) {
+      panel.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[i]
+      + "'>" + questions[this.currentQuestion].answers[i] + "</button>");
+    }
+  },
+  nextQuestion: function() {
+    game.counter = countStartNumber;
+    $("#counter-number").html(game.counter);
+    game.currentQuestion++;
+    game.loadQuestion();
+  },
+  timeUp: function() {
+    clearInterval(timer);
+    $("#counter-number").html(game.counter);
+    panel.html("<h2>Out of Time!</h2>");
+    panel.append("<h3>The Correct Answer was: " + questions[this.currentQuestion].correctAnswer);
+    panel.append("<img src='" + questions[this.currentQuestion].image + "' />");
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
+  results: function() {
+    clearInterval(timer);
+    panel.html("<h2>All done, heres how you did!</h2>");
+    $("#counter-number").html(game.counter);
+    panel.append("<h3>Correct Answers: " + game.correct + "</h3>");
+    panel.append("<h3>Incorrect Answers: " + game.incorrect + "</h3>");
+    panel.append("<h3>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
+    panel.append("<br><button id='start-over'>Start Over?</button>");
+  },
+  clicked: function(e) {
+    clearInterval(timer);
+    if ($(e.target).attr("data-name") === questions[this.currentQuestion].correctAnswer) {
+      this.answeredCorrectly();
+    }
+    else {
+      this.answeredIncorrectly();
+    }
+  },
+  answeredIncorrectly: function() {
+    game.incorrect++;
+    clearInterval(timer);
+    panel.html("<h2>Nope!</h2>");
+    panel.append("<h3>The Correct Answer was: " + questions[game.currentQuestion].correctAnswer + "</h3>");
+    panel.append("<img src='" + questions[game.currentQuestion].image + "' />");
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
+  answeredCorrectly: function() {
+    clearInterval(timer);
+    game.correct++;
+    panel.html("<h2>Correct!</h2>");
+    panel.append("<img src='" + questions[game.currentQuestion].image + "' />");
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
   reset: function() {
-
-    stopwatch.time = 30;
-    stopwatch.lap = 1;
-
-    $("#display").html("00:30");
-  },
-
-  start: function() {
-      if (!clockRunning) {
-        intervalId = setInterval(stopwatch.count, 1000);
-      }
-
-  },
-  stop: function() {
-    clearInterval(intervalId);
-  },
-
-  count: function() {
-    stopwatch.time--;
-    var currentTime = stopwatch.timeConverter(stopwatch.time);
-    $("#display").html(currentTime);
-    if (stopwatch.time === 28) {
-      stopwatch.time;
-    }
-  },
-
-  timeConverter: function(t) {
-
-    var minutes = Math.floor(t / 60);
-    var seconds = t - (minutes * 60);
-
-    if (seconds < 10) {
-      seconds = "0" + seconds;
-    }
-
-    if (minutes === 0) {
-      minutes = "00";
-    }
-
-    else if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-
-    return minutes + ":" + seconds;
+    this.currentQuestion = 0;
+    this.counter = countStartNumber;
+    this.correct = 0;
+    this.incorrect = 0;
+    this.loadQuestion();
   }
 };
+// CLICK EVENTS
+$(document).on("click", "#start-over", function() {
+  game.reset();
+});
+$(document).on("click", ".answer-button", function(e) {
+  game.clicked(e);
+});
+$(document).on("click", "#start", function() {
+  $("#sub-wrapper").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>");
+  game.loadQuestion();
+});
